@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-db
+spec:
+  selector:
+    matchLabels:
+      app: db 
+  serviceName: "headless-service"
+  replicas: 1 
+  template: 
+    metadata:
+      labels:
+        app: db 
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+          name: database
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "rootpassword"
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+        - name: mysql-init
+          mountPath: /docker-entrypoint-initd.d
+      volumes:
+      - name: mysql-init
+        configMap:
+          name: mysql-db
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "localpv"
+      resources:
+        requests:
+          storage: 1Gi
