@@ -1,1 +1,28 @@
+# 🧠 Headless Service in Kubernetes
 
+## 📘 Overview
+
+In Kubernetes, a **Headless Service** is a type of service that **does not assign a Cluster IP**. Instead of routing traffic through a load balancer, it provides **direct DNS-based access** to the individual **Pod IPs** that match a label selector.
+
+## 🔍 Use Cases
+
+- Stateful applications (e.g., **Cassandra**, **MongoDB**, **Kafka**)
+- Applications that need **pod identity**
+- Systems that implement **client-side load balancing**
+- Scenarios where **Pod IPs** must be exposed directly via DNS
+
+## Manifest For HeadLess Service
+
+"""
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-headless-service
+spec:
+  clusterIP: None
+  selector:
+    app: my-app
+  ports:
+    - port: 80
+      targetPort: 80
+"""
