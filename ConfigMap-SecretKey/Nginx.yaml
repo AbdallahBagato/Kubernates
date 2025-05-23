@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: my-dep
+  name: my-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-dep
+  template:
+    metadata:
+      labels:
+        app: my-dep
+    spec:
+      containers:
+      - image: nginx:latest
+        name: demo-container
+        ports:
+        - containerPort: 80
+        env:
+          - name: DATABASE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: app-config        
+                key: DATABASE_URL 
+          - name: LOG_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: app-config        
+                key: LOG_LEVEL 
+          - name: MAX_CONNECTIONS
+            valueFrom:
+              configMapKeyRef:
+                name: app-config        
+                key: MAX_CONNECTIONS 
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: DB_PASSWORD
+
